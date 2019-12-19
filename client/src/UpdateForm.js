@@ -1,42 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
+
 const initialMovie = {
-    id: 5,
+    id: "",
     title: '',
     director: '',
     metascore: '',
     stars: []
 };
+
 const UpdateForm = props => {
-    const [movie, setMovie] = useState(iniialMovie);
+    const moviesLength = props.movies;
+
+    const [movie, setMovie] = useState(initialMovie);
     useEffect(() => {
-        const movieToEdit = props.movies.find(
-            e => `${e.id}` === props.match.params.id
-        );
-        console.log(props.movies, movieToEdit);
-        if (movieToEdit) {
-            setMovie(movieToEdit);
+        if (moviesLength > 0) {
+            const moviesEdit = props.movies.find(
+                thing => `${thing.id}` === props.match.params.id);
+            console.log(moviesEdit);
+            setMovie(moviesEdit);
         }
     }, [props.movies, props.match.params.id]);
+
     const handleChange = event => {
         setMovie({
             ...movie,
             [event.target.name]: event.target.value
         })
     }
-    const handleSubmit = e => {
+    const handleSubmit = (e, id) => {
         e.preventDefault();
-        axios.put(`http://localhost:5000/api/movies/${movie.id}`, movie)
+        axios.put(`http://localhost:5000/api/movies/${props.match.params.id}`, movie)
             .then(res => {
                 props.updateMovies(res.data);
-                props.history.push(`/movie-list`)
+                props.history.push(`/movie-list/${id}`);
             })
             .catch(err => console.log(err))
     }
+    const handleStars = () => {
+        const { stars } = initialMovie;
+        stars.push(movie.actor);
+        setMovie({ actor: '', stars });
+    }
+    // if (props.movies.length === 0) {
+    //     return <h2>Loading data...</h2>
+    // }
     return (
         <div>
             <h2>Update Form</h2>
             <form onSubmit={handleSubmit}>
+                <input type="text"
+                    name="id"
+                    onChange={handleChange}
+                    placeholder="id" value={movie.id} />
                 <input
                     type="text"
                     name="title"
@@ -58,6 +74,12 @@ const UpdateForm = props => {
                     placeholder="metascore"
                     value={movie.metascore}
                 />
+                <button onClick={handleStars}>Add Actor</button>
+
+                <button className="md-button">
+                    Update
+                 </button>
+
             </form>
         </div>
     )
