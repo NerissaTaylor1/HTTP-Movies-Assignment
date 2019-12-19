@@ -13,7 +13,7 @@ const App = () => {
   };
   const updateMovies = (movie) => {
     console.log(movie)
-    setMovies({ movies: [...movies, movie] })
+    setMovies({ movies: [movies, movie] })
   }
   return (
     <>
@@ -29,7 +29,7 @@ const App = () => {
 
 
       <Route path='/update-movie/:id' render={props => {
-        return <UpdateForm {...props} movies={movies} updateMovies={updateMovies} key={props.match.key} />
+        return <UpdateForm {...props} movies={movies} updateMovies={updateMovies} />
       }}
       />
 

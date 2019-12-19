@@ -32,8 +32,9 @@ const UpdateForm = props => {
         e.preventDefault();
         axios.put(`http://localhost:5000/api/movies/${props.match.params.id}`, movie)
             .then(res => {
-                props.updateMovies(res.data);
-                props.history.push(`/movie-list/${id}`);
+                props.updateMovies(res.data, movie);
+                props.history.push(`/`);
+                setMovie({ movie: res.data, id })
             })
             .catch(err => console.log(err))
     }
@@ -74,7 +75,6 @@ const UpdateForm = props => {
                     placeholder="metascore"
                     value={movie.metascore}
                 />
-                <button onClick={handleStars}>Add Actor</button>
 
                 <button className="md-button">
                     Update
